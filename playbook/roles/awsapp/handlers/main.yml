@@ -1,0 +1,4 @@
+---
+# handlers file for awsapp
+- name: restart apache2
+  command: service apache2 restart

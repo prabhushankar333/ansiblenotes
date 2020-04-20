@@ -1,0 +1,5 @@
+---
+# tasks file for awsapp
+- import_tasks: awsapp.yml
+- import_tasks: stop.yml
+- import_tasks: restart.yml

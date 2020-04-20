@@ -1,0 +1,31 @@
+version: '3'
+services:
+  app:
+    image: 8220480504/ubuntu1:v1
+    command: "/usr/bin/supervisord -c /etc/supervisord.conf"
+    hostname: crm-app
+    ports:
+      - "2221-2225:22"
+      - "8081-8085:80"
+    volumes:
+      - /opt/kickstart-ansible/supervisor/conf/main.conf:/etc/supervisord.conf
+      - /opt/kickstart-ansible/supervisor/conf/sshd.ini:/etc/supervisord.d/sshd.ini
+    depends_on:
+      - mysql
+    networks:
+      - ansible-net
+  mysql:
+    image: 8220480504/ubuntu1:v1
+    command: "/usr/bin/supervisord -c /etc/supervisord.conf"
+    hostname: crm-redis
+    ports:
+      - "2231:22"
+    volumes:
+      - /opt/kickstart-ansible/supervisor/conf/main.conf:/etc/supervisord.conf
+      - /opt/kickstart-ansible/supervisor/conf/sshd.ini:/etc/supervisord.d/sshd.ini
+    networks:
+      - ansible-net
+networks:
+  ansible-net:
+    external:
+      name: ansible-net

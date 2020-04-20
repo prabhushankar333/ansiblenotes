@@ -1,0 +1,24 @@
+- name: install apache2
+  apt:
+    pkg:
+    - apache2
+    - tree
+- name: copy config to remote system
+  template:
+    src: sample.conf.j2
+    dest: /etc/apache2/sites-available/sample.conf
+    owner: root
+    group: root
+    mode: 755
+  notify:
+    - restart apache2
+- name: make symlink
+  file:
+    src: /etc/apache2/sites-available/sample.conf
+    dest: /etc/apache2/sites-enabled/sample.conf
+    state: link
+- name: git clone sample site
+  git:
+    repo: https://github.com/lmammino/sample-web-project.git
+    dest: /var/www/html
+    separate_git_dir: /var/www/html/sample-web-project.git

@@ -1,0 +1,25 @@
+# use base image.
+FROM ubuntu
+
+# install openssh server and passwd.
+RUN apt-get update && apt-get upgrade -y
+
+RUN apt install -y openssh-server -y && apt-get install supervisor -y
+
+# configure openssh server.
+RUN set -x \
+  && mkdir /var/run/sshd \
+  && rm -rf /etc/ssh/ssh_host_rsa_key \
+  && ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N '' \
+  && sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+
+# configure openssh user.
+RUN set -x \
+  && mkdir /root/.ssh \
+  && touch /root/.ssh/authorized_keys \
+  && touch /root/.ssh/config \
+  && echo -e "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null" >> /root/.ssh/config \
+  && chmod 400 /root/.ssh/config
+ADD secret/ansible-node.pub /root/.ssh/authorized_keys
+
+# cleanup history.
